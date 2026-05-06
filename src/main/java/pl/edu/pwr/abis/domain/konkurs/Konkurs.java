@@ -46,8 +46,11 @@ public class Konkurs {
     @ManyToMany
     private Set<CzlonekJury> jury;
 
-    // Poprawka po weryfikacji licznosci: jeden czlonek jury moze przewodniczyc wielu konkursom.
-    // Ograniczenie {subsets jury} nie jest wymuszane na poziomie samej definicji encji.
+    // Blednie odwzorowalem te relacje jako 1-1, bo potraktowalem "przewodniczacy" jak pojedyncze
+    // sparowanie po obu stronach, ignorujac fakt, ze jeden CzlonekJury moze miec 0..* konkursow.
+    // Ograniczenie {subsets jury} nadal nie jest wymuszane na poziomie samej definicji encji.
+    // @OneToOne(optional = true)
+    // private CzlonekJury przewodniczacy;
     @ManyToOne(optional = true)
     private CzlonekJury przewodniczacy;
 }

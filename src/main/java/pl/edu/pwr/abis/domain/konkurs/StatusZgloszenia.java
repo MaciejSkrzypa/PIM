@@ -1,9 +1,9 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
 public enum StatusZgloszenia {
-    ROBOCZE,
-    ZLOZONE,
-    ZWERYFIKOWANE,
+    NIEZAKWALIFIKOWANE,
     ODRZUCONE,
-    ZAAKCEPTOWANE
+    ROBOCZE,
+    ZAAKCEPTOWANE,
+    ZŁOŻONE
 }

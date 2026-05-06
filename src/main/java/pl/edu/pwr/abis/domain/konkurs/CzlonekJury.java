@@ -25,7 +25,10 @@ public class CzlonekJury extends Uzytkownik {
     @ManyToMany(mappedBy = "jury")
     private java.util.Set<Konkurs> konkursyJury;
 
-    // Poprzednie odwzorowanie 1-1 bylo bledne; z diagramu wynika 0..* konkursow po stronie czlonka jury.
+    // Blednie odwzorowalem te relacje jako 1-1, bo zbyt pochopnie zalozylem pojedynczy konkurs
+    // zamiast odczytac liczebnosc 0..* po stronie "zarzadzaneKonkursy" dla CzlonkaJury.
+    // @OneToOne(optional = true, mappedBy = "przewodniczacy")
+    // private Konkurs zarzadzaneKonkursy;
     @OneToMany(mappedBy = "przewodniczacy")
     private List<Konkurs> zarzadzaneKonkursy = new ArrayList<>();
 }
