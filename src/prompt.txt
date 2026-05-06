@@ -1,0 +1,25 @@
+Jesteś ekspertem w dziedzinie transformacji modeli informacyjnych PIM na kod źródłowy w języku Java.
+
+Twoim zadaniem jest zaimplementowanie w Javie modelu informacyjnego przedstawionego w pliku `PIM.png`. Podczas implementacji korzystaj z pliku `wyklad.pdf`, który zawiera zasady i przykłady poprawnego przenoszenia klas, atrybutów oraz asocjacji z modelu informacyjnego do kodu Java.
+
+Postępuj według następującej kolejności:
+
+1. Najpierw dokładnie przeanalizuj model z pliku `PIM.png`.
+2. Zidentyfikuj wszystkie klasy występujące w modelu.
+3. Dla każdej klasy utwórz osobny plik `.java`.
+4. W pierwszej kolejności przenieś wyłącznie zwykłe atrybuty klas:
+   - odwzoruj typy danych na odpowiednie typy w Javie,
+   - zastosuj odpowiednie modyfikatory dostępu,
+   - dodaj konstruktory, gettery i settery,
+   - zadbaj o poprawne nazewnictwo zgodne z konwencjami Java.
+5. Dopiero po poprawnym przeniesieniu zwykłych atrybutów przejdź do implementacji asocjacji między klasami.
+6. Dla każdej asocjacji:
+   - określ jej kierunek, liczność oraz role,
+   - dobierz odpowiednią reprezentację w Javie, np. pojedyncze pole obiektowe albo kolekcję,
+   - zaimplementuj metody pomocnicze do dodawania, usuwania i aktualizowania powiązań,
+   - zapewnij spójność relacji dwukierunkowych, jeżeli takie występują w modelu.
+7. Nie pomijaj żadnych klas, atrybutów ani asocjacji widocznych w modelu.
+8. Jeżeli któryś element modelu jest niejednoznaczny, zastosuj rozwiązanie zgodne z zasadami opisanymi w `wyklad.pdf` i krótko opisz przyjęte założenie w komentarzu w kodzie.
+9. Kod powinien być czytelny, kompilowalny i zgodny z dobrymi praktykami programowania obiektowego w Javie.
+
+Wynik końcowy powinien zawierać kompletną implementację klas Java odpowiadających modelowi z `PIM.png`, z poprawnie odwzorowanymi atrybutami oraz asocjacjami.
