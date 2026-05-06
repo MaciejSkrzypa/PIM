@@ -1,89 +1,49 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
+@Entity(name = "konkurs_wizytastudyjna")
+@Getter
+@Setter
 public class WizytaStudyjna {
 
-    private final String miejsce;
-    private List<String> pytaniaOdJury = new ArrayList<>();
-    private List<String> opracowanieOdpowiedzi = new ArrayList<>();
-    private final LocalDate rzeczywistyTerminZlozeniaRaportu;
+    @Id
+    private Long id;
+
+    @Basic
+    private String miejsce;
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "wizytastudyjna_pytaniaodjury", joinColumns = @JoinColumn(name = "wizyta_id"))
+    @Column(name = "pytanie_od_jury")
+    @OrderColumn(name = "pytanie_order")
+    private List<String> pytaniaOdJury;
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "wizytastudyjna_opracowanieodpowiedzi", joinColumns = @JoinColumn(name = "wizyta_id"))
+    @Column(name = "opracowanie_odpowiedzi")
+    @OrderColumn(name = "odpowiedz_order")
+    private List<String> opracowanieOdpowiedzi;
+
+    @Basic
+    @Temporal(TemporalType.DATE)
+    private Date rzeczywistyTerminZlozeniaRaportu;
+
+    @OneToOne(optional = true)
     private Projekt projekt;
-
-    public WizytaStudyjna(
-        String miejsce,
-        List<String> pytaniaOdJury,
-        List<String> opracowanieOdpowiedzi,
-        LocalDate rzeczywistyTerminZlozeniaRaportu
-    ) {
-        this.miejsce = Uzytkownik.requireText(miejsce, "miejsce");
-        setPytaniaOdJury(pytaniaOdJury);
-        setOpracowanieOdpowiedzi(opracowanieOdpowiedzi);
-        this.rzeczywistyTerminZlozeniaRaportu = Objects.requireNonNull(
-            rzeczywistyTerminZlozeniaRaportu,
-            "rzeczywistyTerminZlozeniaRaportu cannot be null"
-        );
-    }
-
-    public String getMiejsce() {
-        return miejsce;
-    }
-
-    public List<String> getPytaniaOdJury() {
-        return Collections.unmodifiableList(pytaniaOdJury);
-    }
-
-    public void setPytaniaOdJury(List<String> pytaniaOdJury) {
-        this.pytaniaOdJury = copyTexts(pytaniaOdJury, "pytaniaOdJury");
-    }
-
-    public List<String> getOpracowanieOdpowiedzi() {
-        return Collections.unmodifiableList(opracowanieOdpowiedzi);
-    }
-
-    public void setOpracowanieOdpowiedzi(List<String> opracowanieOdpowiedzi) {
-        this.opracowanieOdpowiedzi = copyTexts(opracowanieOdpowiedzi, "opracowanieOdpowiedzi");
-    }
-
-    public LocalDate getRzeczywistyTerminZlozeniaRaportu() {
-        return rzeczywistyTerminZlozeniaRaportu;
-    }
-
-    public Projekt getProjekt() {
-        return projekt;
-    }
-
-    public void setProjekt(Projekt projekt) {
-        if (this.projekt == projekt) {
-            return;
-        }
-
-        Projekt previous = this.projekt;
-        this.projekt = null;
-        if (previous != null) {
-            previous.setWizytaStudyjnaInternal(null);
-        }
-
-        this.projekt = projekt;
-        if (projekt != null) {
-            projekt.setWizytaStudyjnaInternal(this);
-        }
-    }
-
-    void setProjektInternal(Projekt projekt) {
-        this.projekt = projekt;
-    }
-
-    private static List<String> copyTexts(List<String> values, String fieldName) {
-        Objects.requireNonNull(values, fieldName + " cannot be null");
-        List<String> copied = new ArrayList<>(values.size());
-        for (String value : values) {
-            copied.add(Uzytkownik.requireText(value, fieldName));
-        }
-        return copied;
-    }
 }

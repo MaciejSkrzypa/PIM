@@ -1,45 +1,36 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Objects;
+import jakarta.persistence.Basic;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
+import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * The derived attribute czyOcenaOpozniona depends on a business deadline not made explicit in the
- * diagram, so the implementation derives it from an optional reference date passed at creation.
- */
+@Getter
+@Setter
+@MappedSuperclass
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class OcenaProjektu {
 
-    private final BigDecimal ocena;
-    private final LocalDate rzeczywistyTerminWystawienia;
-    private final LocalDate terminReferencyjny;
+    @Id
+    private Long id;
 
-    protected OcenaProjektu(
-        BigDecimal ocena,
-        LocalDate rzeczywistyTerminWystawienia,
-        LocalDate terminReferencyjny
-    ) {
-        this.ocena = requireAmount(ocena, "ocena");
-        this.rzeczywistyTerminWystawienia = Objects.requireNonNull(
-            rzeczywistyTerminWystawienia,
-            "rzeczywistyTerminWystawienia cannot be null"
-        );
-        this.terminReferencyjny = terminReferencyjny;
-    }
+    @Basic
+    private Double ocena;
 
-    public BigDecimal getOcena() {
-        return ocena;
-    }
+    @Basic
+    @Temporal(TemporalType.DATE)
+    private Date rzeczywistyTerminWystawienia;
 
-    public LocalDate getRzeczywistyTerminWystawienia() {
-        return rzeczywistyTerminWystawienia;
-    }
-
-    public boolean isCzyOcenaOpozniona() {
-        return terminReferencyjny != null && rzeczywistyTerminWystawienia.isAfter(terminReferencyjny);
-    }
-
-    protected static BigDecimal requireAmount(BigDecimal value, String fieldName) {
-        return Objects.requireNonNull(value, fieldName + " cannot be null");
-    }
+    @Transient
+    private Boolean czyOcenaOpozniona;
 }

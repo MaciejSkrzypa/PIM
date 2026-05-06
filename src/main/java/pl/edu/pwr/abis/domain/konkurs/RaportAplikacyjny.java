@@ -1,89 +1,42 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
+@Entity(name = "konkurs_raportaplikacyjny")
+@Getter
+@Setter
 public class RaportAplikacyjny {
 
-    private final List<String> wykazZalacznikow;
-    private LocalDate dataZlozeniaFizycznego;
+    @Id
+    private Long id;
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "raportaplikacyjny_zalaczniki", joinColumns = @JoinColumn(name = "raport_id"))
+    @Column(name = "zalacznik")
+    private List<String> wykazZalacznikow;
+
+    @Basic
+    @Temporal(TemporalType.DATE)
+    private Date dataZlozeniaFizycznego;
+
+    @Enumerated
     private StatusRaportuAplikacyjnego status;
+
+    @OneToOne(optional = true)
     private Projekt projekt;
-
-    public RaportAplikacyjny(
-        List<String> wykazZalacznikow,
-        LocalDate dataZlozeniaFizycznego,
-        StatusRaportuAplikacyjnego status
-    ) {
-        this.wykazZalacznikow = requireNonEmptyTexts(wykazZalacznikow, "wykazZalacznikow");
-        this.dataZlozeniaFizycznego = Objects.requireNonNull(
-            dataZlozeniaFizycznego,
-            "dataZlozeniaFizycznego cannot be null"
-        );
-        this.status = Objects.requireNonNull(status, "status cannot be null");
-    }
-
-    public List<String> getWykazZalacznikow() {
-        return Collections.unmodifiableList(wykazZalacznikow);
-    }
-
-    public LocalDate getDataZlozeniaFizycznego() {
-        return dataZlozeniaFizycznego;
-    }
-
-    public void setDataZlozeniaFizycznego(LocalDate dataZlozeniaFizycznego) {
-        this.dataZlozeniaFizycznego = Objects.requireNonNull(
-            dataZlozeniaFizycznego,
-            "dataZlozeniaFizycznego cannot be null"
-        );
-    }
-
-    public StatusRaportuAplikacyjnego getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusRaportuAplikacyjnego status) {
-        this.status = Objects.requireNonNull(status, "status cannot be null");
-    }
-
-    public Projekt getProjekt() {
-        return projekt;
-    }
-
-    public void setProjekt(Projekt projekt) {
-        if (this.projekt == projekt) {
-            return;
-        }
-
-        Projekt previous = this.projekt;
-        this.projekt = null;
-        if (previous != null) {
-            previous.setRaportAplikacyjnyInternal(null);
-        }
-
-        this.projekt = projekt;
-        if (projekt != null) {
-            projekt.setRaportAplikacyjnyInternal(this);
-        }
-    }
-
-    void setProjektInternal(Projekt projekt) {
-        this.projekt = projekt;
-    }
-
-    private static List<String> requireNonEmptyTexts(List<String> values, String fieldName) {
-        Objects.requireNonNull(values, fieldName + " cannot be null");
-        if (values.isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " cannot be empty");
-        }
-
-        List<String> copied = new ArrayList<>(values.size());
-        for (String value : values) {
-            copied.add(Uzytkownik.requireText(value, fieldName));
-        }
-        return copied;
-    }
 }

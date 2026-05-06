@@ -1,69 +1,24 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Objects;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 
+@Entity(name = "konkurs_ocenaindywidualna")
+@Getter
+@Setter
+@DiscriminatorValue("OcenaIndywidualna")
 public class OcenaIndywidualna extends OcenaProjektu {
 
+    @ManyToOne(optional = true)
     private Projekt projekt;
+
+    @ManyToOne(optional = true)
     private Asesor asesor;
+
+    // Pole konkurs odwzorowuje kwalifikator "a konkurs" z diagramu.
+    @ManyToOne(optional = true)
     private Konkurs konkurs;
-
-    public OcenaIndywidualna(
-        BigDecimal ocena,
-        LocalDate rzeczywistyTerminWystawienia,
-        LocalDate terminReferencyjny,
-        Projekt projekt,
-        Asesor asesor,
-        Konkurs konkurs
-    ) {
-        super(ocena, rzeczywistyTerminWystawienia, terminReferencyjny);
-        attachTo(projekt, asesor, konkurs);
-    }
-
-    public Projekt getProjekt() {
-        return projekt;
-    }
-
-    public Asesor getAsesor() {
-        return asesor;
-    }
-
-    public Konkurs getKonkurs() {
-        return konkurs;
-    }
-
-    public void attachTo(Projekt projekt, Asesor asesor, Konkurs konkurs) {
-        Objects.requireNonNull(projekt, "projekt cannot be null");
-        Objects.requireNonNull(asesor, "asesor cannot be null");
-        Objects.requireNonNull(konkurs, "konkurs cannot be null");
-        if (!projekt.uczestniczyWKonkursie(konkurs)) {
-            throw new IllegalArgumentException("Projekt nie bierze udzialu w podanym konkursie");
-        }
-
-        projekt.addAsesor(konkurs, asesor);
-
-        detach();
-
-        this.projekt = projekt;
-        this.asesor = asesor;
-        this.konkurs = konkurs;
-
-        projekt.addOcenaIndywidualnaInternal(this);
-        asesor.addOcenaIndywidualnaInternal(this);
-    }
-
-    public void detach() {
-        if (projekt != null) {
-            projekt.removeOcenaIndywidualnaInternal(this);
-        }
-        if (asesor != null) {
-            asesor.removeOcenaIndywidualnaInternal(this);
-        }
-
-        projekt = null;
-        asesor = null;
-        konkurs = null;
-    }
 }

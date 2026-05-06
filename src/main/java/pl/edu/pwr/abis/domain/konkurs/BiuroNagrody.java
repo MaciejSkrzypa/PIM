@@ -1,65 +1,27 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Objects;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
-public final class BiuroNagrody {
+@Entity(name = "konkurs_biuronagrody")
+@Getter
+@Setter
+@DiscriminatorValue("BiuroNagrody")
+public class BiuroNagrody extends Uzytkownik {
 
-    private static final BiuroNagrody INSTANCE = new BiuroNagrody();
-
+    // Stereotype <<Singleton>> is not enforced directly by the JPA mapping.
+    @Basic
     private String adresKorespondencyjny;
+
+    @Basic
     private String email;
-    private final Set<CzlonekBiuraNagrody> czlonkowie = new LinkedHashSet<>();
 
-    private BiuroNagrody() {}
-
-    public static BiuroNagrody getInstance() {
-        return INSTANCE;
-    }
-
-    public String getAdresKorespondencyjny() {
-        return adresKorespondencyjny;
-    }
-
-    public void setAdresKorespondencyjny(String adresKorespondencyjny) {
-        this.adresKorespondencyjny = Uzytkownik.requireText(
-            adresKorespondencyjny,
-            "adresKorespondencyjny"
-        );
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = Uzytkownik.requireText(email, "email");
-    }
-
-    public Set<CzlonekBiuraNagrody> getCzlonkowie() {
-        return Collections.unmodifiableSet(czlonkowie);
-    }
-
-    public void addCzlonek(CzlonekBiuraNagrody czlonekBiuraNagrody) {
-        Objects.requireNonNull(czlonekBiuraNagrody, "czlonekBiuraNagrody cannot be null");
-        if (czlonkowie.add(czlonekBiuraNagrody)) {
-            czlonekBiuraNagrody.setBiuroNagrodyInternal(this);
-        }
-    }
-
-    public void removeCzlonek(CzlonekBiuraNagrody czlonekBiuraNagrody) {
-        if (czlonekBiuraNagrody != null && czlonkowie.remove(czlonekBiuraNagrody)) {
-            czlonekBiuraNagrody.setBiuroNagrodyInternal(null);
-        }
-    }
-
-    void addCzlonekInternal(CzlonekBiuraNagrody czlonekBiuraNagrody) {
-        czlonkowie.add(czlonekBiuraNagrody);
-    }
-
-    void removeCzlonekInternal(CzlonekBiuraNagrody czlonekBiuraNagrody) {
-        czlonkowie.remove(czlonekBiuraNagrody);
-    }
+    @OneToMany(mappedBy = "biuroNagrody", cascade = CascadeType.REMOVE)
+    private Set<CzlonekBiuraNagrody> czlonkowie;
 }

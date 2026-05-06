@@ -1,42 +1,17 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+import lombok.Getter;
+import lombok.Setter;
 
+@Entity(name = "konkurs_ocenakoncowa")
+@Getter
+@Setter
+@DiscriminatorValue("OcenaKoncowa")
 public class OcenaKoncowa extends OcenaProjektu {
 
+    @OneToOne(optional = true)
     private Projekt projekt;
-
-    public OcenaKoncowa(
-        BigDecimal ocena,
-        LocalDate rzeczywistyTerminWystawienia,
-        LocalDate terminReferencyjny
-    ) {
-        super(ocena, rzeczywistyTerminWystawienia, terminReferencyjny);
-    }
-
-    public Projekt getProjekt() {
-        return projekt;
-    }
-
-    public void setProjekt(Projekt projekt) {
-        if (this.projekt == projekt) {
-            return;
-        }
-
-        Projekt previous = this.projekt;
-        this.projekt = null;
-        if (previous != null) {
-            previous.setOcenaKoncowaInternal(null);
-        }
-
-        this.projekt = projekt;
-        if (projekt != null) {
-            projekt.setOcenaKoncowaInternal(this);
-        }
-    }
-
-    void setProjektInternal(Projekt projekt) {
-        this.projekt = projekt;
-    }
 }

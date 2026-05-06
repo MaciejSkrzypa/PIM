@@ -1,67 +1,22 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Objects;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
+@Entity(name = "konkurs_czlonekbiuranagrody")
+@Getter
+@Setter
+@DiscriminatorValue("CzlonekBiuraNagrody")
 public class CzlonekBiuraNagrody extends Uzytkownik {
 
+    @ManyToOne(optional = true)
     private BiuroNagrody biuroNagrody;
-    private final Set<EkspertIPMA> aktualniEksperci = new LinkedHashSet<>();
 
-    public CzlonekBiuraNagrody(String login, String haslo) {
-        super(login, haslo);
-        setBiuroNagrody(BiuroNagrody.getInstance());
-    }
-
-    public BiuroNagrody getBiuroNagrody() {
-        return biuroNagrody;
-    }
-
-    public void setBiuroNagrody(BiuroNagrody biuroNagrody) {
-        if (this.biuroNagrody == biuroNagrody) {
-            return;
-        }
-
-        BiuroNagrody previous = this.biuroNagrody;
-        this.biuroNagrody = null;
-        if (previous != null) {
-            previous.removeCzlonekInternal(this);
-        }
-
-        this.biuroNagrody = biuroNagrody;
-        if (biuroNagrody != null) {
-            biuroNagrody.addCzlonekInternal(this);
-        }
-    }
-
-    void setBiuroNagrodyInternal(BiuroNagrody biuroNagrody) {
-        this.biuroNagrody = biuroNagrody;
-    }
-
-    public Set<EkspertIPMA> getAktualniEksperci() {
-        return Collections.unmodifiableSet(aktualniEksperci);
-    }
-
-    public void addAktualnyEkspert(EkspertIPMA ekspertIPMA) {
-        Objects.requireNonNull(ekspertIPMA, "ekspertIPMA cannot be null");
-        if (aktualniEksperci.add(ekspertIPMA)) {
-            ekspertIPMA.addCzlonekBiuraNagrodyInternal(this);
-        }
-    }
-
-    public void removeAktualnyEkspert(EkspertIPMA ekspertIPMA) {
-        if (ekspertIPMA != null && aktualniEksperci.remove(ekspertIPMA)) {
-            ekspertIPMA.removeCzlonekBiuraNagrodyInternal(this);
-        }
-    }
-
-    void addAktualnyEkspertInternal(EkspertIPMA ekspertIPMA) {
-        aktualniEksperci.add(ekspertIPMA);
-    }
-
-    void removeAktualnyEkspertInternal(EkspertIPMA ekspertIPMA) {
-        aktualniEksperci.remove(ekspertIPMA);
-    }
+    @ManyToMany
+    private Set<EkspertIPMA> aktualniEksperci;
 }

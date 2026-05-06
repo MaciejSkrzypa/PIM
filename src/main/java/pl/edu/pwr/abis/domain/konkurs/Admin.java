@@ -1,8 +1,12 @@
 package pl.edu.pwr.abis.domain.konkurs;
 
-public class Admin extends Uzytkownik {
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.Setter;
 
-    public Admin(String login, String haslo) {
-        super(login, haslo);
-    }
-}
+@Entity(name = "konkurs_admin")
+@Getter
+@Setter
+@DiscriminatorValue("Admin")
+public class Admin extends Uzytkownik {}
