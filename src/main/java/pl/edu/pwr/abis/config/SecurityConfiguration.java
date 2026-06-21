@@ -49,6 +49,8 @@ public class SecurityConfiguration {
                 authz ->
                     // prettier-ignore
                 authz
+                    .requestMatchers(antMatcher("/EkspertIPMA")).permitAll()
+                    .requestMatchers(antMatcher("/EkspertIPMA/**")).permitAll()
                     .requestMatchers(mvc.pattern(HttpMethod.POST, "/api/authenticate")).permitAll()
                     .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/authenticate")).permitAll()
                     .requestMatchers(mvc.pattern("/api/register")).permitAll()
