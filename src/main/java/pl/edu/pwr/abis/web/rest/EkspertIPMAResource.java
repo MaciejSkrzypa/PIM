@@ -62,7 +62,12 @@ public class EkspertIPMAResource {
 
     @Operation(
         summary = "Zaktualizuj eksperta IPMA",
-        description = "Aktualizuje dane eksperta IPMA i ustawia wymagajaceWeryfikacji na true.",
+        description = "Aktualizuje dane eksperta IPMA i ustawia wymagajaceWeryfikacji na true. Identyfikator eksperta musi być podany w ciele żądania.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Ekspert IPMA do zaktualizowania z identyfikatorem",
+            required = true,
+            content = @Content(schema = @Schema(implementation = EkspertIPMAVM.class))
+        ),
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -73,16 +78,19 @@ public class EkspertIPMAResource {
             @ApiResponse(responseCode = "404", description = "Ekspert nie istnieje", content = @Content)
         }
     )
-    @RequestMapping(value = "/{id}", method = { RequestMethod.PUT, RequestMethod.PATCH })
+    @RequestMapping(method = { RequestMethod.PUT, RequestMethod.PATCH })
     public ResponseEntity<EkspertIPMAVM> updateEkspertIPMA(
-        @Parameter(description = "Identyfikator eksperta", example = "1001") @PathVariable("id") Long id,
         @Valid @RequestBody EkspertIPMAVM ekspertIPMAVM
     ) {
-        log.debug("REST request to update EkspertIPMA : {}", id);
+        log.debug("REST request to update EkspertIPMA : {}", ekspertIPMAVM);
+
+        if (ekspertIPMAVM.getId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
         return ResponseUtil.wrapOrNotFound(
             ekspertIPMARepository
-                .findById(id)
+                .findById(ekspertIPMAVM.getId())
                 .map(ekspertIPMA -> {
                     ekspertIPMA.setImie(ekspertIPMAVM.getImie());
                     ekspertIPMA.setNazwisko(ekspertIPMAVM.getNazwisko());

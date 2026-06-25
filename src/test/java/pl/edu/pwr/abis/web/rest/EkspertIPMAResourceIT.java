@@ -49,6 +49,7 @@ class EkspertIPMAResourceIT {
             .andReturn();
 
         String location = createResult.getResponse().getHeader("Location");
+        Long createdId = om.readTree(createResult.getResponse().getContentAsString()).get("id").asLong();
 
         restEkspertIPMAMockMvc
             .perform(get(location).accept(MediaType.APPLICATION_JSON))
@@ -58,13 +59,14 @@ class EkspertIPMAResourceIT {
             .andExpect(jsonPath("$.nazwisko").value("Kowalski"))
             .andExpect(jsonPath("$.wymagajaceWeryfikacji").value(false))
             .andExpect(jsonPath("$.dataSzkolenia").value("2026-01-10"))
-            .andExpect(jsonPath("$.id").doesNotExist())
+            .andExpect(jsonPath("$.id").value(createdId.intValue()))
             .andExpect(jsonPath("$.asesor").doesNotExist());
 
         EkspertIPMAVM updateRequest = ekspertIPMA("Anna", "Nowak", "2026-02-15");
+        updateRequest.setId(createdId);
 
         restEkspertIPMAMockMvc
-            .perform(put(location).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(updateRequest)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(updateRequest)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.imie").value("Anna"))
             .andExpect(jsonPath("$.nazwisko").value("Nowak"))

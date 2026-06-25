@@ -9,7 +9,7 @@ import pl.edu.pwr.abis.domain.konkurs.EkspertIPMA;
 @Schema(description = "Publiczny widok eksperta IPMA")
 public class EkspertIPMAVM {
 
-    @Schema(description = "Identyfikator eksperta", example = "1001", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Identyfikator eksperta", example = "1001")
     private Long id;
 
     @NotBlank
