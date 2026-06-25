@@ -1,23 +1,30 @@
 package pl.edu.pwr.abis.web.rest.vm;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import pl.edu.pwr.abis.domain.konkurs.EkspertIPMA;
 
+@Schema(description = "Publiczny widok eksperta IPMA")
 public class EkspertIPMAVM {
 
+    @Schema(description = "Identyfikator eksperta", example = "1001", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @NotBlank
+    @Schema(description = "Imie eksperta", example = "Jan", requiredMode = Schema.RequiredMode.REQUIRED)
     private String imie;
 
     @NotBlank
+    @Schema(description = "Nazwisko eksperta", example = "Kowalski", requiredMode = Schema.RequiredMode.REQUIRED)
     private String nazwisko;
 
+    @Schema(description = "Czy dane eksperta wymagaja weryfikacji", example = "false", accessMode = Schema.AccessMode.READ_ONLY)
     private boolean wymagajaceWeryfikacji;
 
     @NotNull
+    @Schema(description = "Data szkolenia eksperta", example = "2026-01-10", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate dataSzkolenia;
 
     public EkspertIPMAVM() {}
