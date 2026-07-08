@@ -37,4 +37,20 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="20260621000000-3" author="codex">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="konkurs_ekspertipma"/>
+            <columnExists tableName="konkurs_ekspertipma" columnName="asesor_id"/>
+            <not>
+                <columnExists tableName="konkurs_ekspertipma" columnName="asesor_login"/>
+            </not>
+        </preConditions>
+        <renameColumn
+            tableName="konkurs_ekspertipma"
+            oldColumnName="asesor_id"
+            newColumnName="asesor_login"
+            columnDataType="varchar(255)"
+        />
+    </changeSet>
 </databaseChangeLog>
